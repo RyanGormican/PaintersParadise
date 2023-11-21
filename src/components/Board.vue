@@ -48,6 +48,8 @@
   selectedColor: 'red',
   paletteColors: ['#ff0000', '#ffae00', '#ffff5c', '#00ff00', '#188533','#1df2f2','#0000ff', '#8b8ee0', '#3f0fff','#ee3ff2','ffffff','#000000',],
   drawingMode: 'dot',
+  tempCanvas: null,
+  tempContext: null,
   };
   },
   methods: {
@@ -79,6 +81,67 @@
   link.download = 'drawing.png';
   link.click();
   },
+  drawPreview(event) {
+  const canvas = this.$refs.canvas;
+
+  if (!this.tempCanvas) {
+  // Create a temporary canvas and context
+  this.tempCanvas = document.createElement('canvas');
+  this.tempContext = this.tempCanvas.getContext('2d');
+  this.tempCanvas.width = canvas.width;
+  this.tempCanvas.height = canvas.height;
+
+  // Append the temporary canvas to the canvas wrapper
+  this.$refs.canvasWrapper.appendChild(this.tempCanvas);
+  }
+
+  const tempContext = this.tempContext;
+
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  // Clear previous preview on the temporary canvas
+  tempContext.clearRect(0, 0, this.tempCanvas.width, this.tempCanvas.height);
+
+  // Draw the shape preview on the temporary canvas
+  const previewSize = 30; // Adjust the size as needed
+  const previewX = x - previewSize / 2;
+  const previewY = y - previewSize / 2;
+
+  // Set global alpha for the preview shape on the temporary canvas
+  tempContext.globalAlpha = 0.5; // Adjust the opacity as needed
+
+  // Draw the selected shape preview on the temporary canvas
+  switch (this.drawingMode) {
+  case 'square':
+  tempContext.fillStyle = this.selectedColor;
+  tempContext.fillRect(previewX, previewY, previewSize, previewSize);
+  break;
+  case 'circle':
+  tempContext.beginPath();
+  tempContext.arc(x, y, previewSize / 2, 0, 2 * Math.PI);
+  tempContext.fillStyle = this.selectedColor;
+  tempContext.fill();
+  tempContext.closePath();
+  break;
+  case 'triangle':
+  tempContext.beginPath();
+  tempContext.moveTo(x, y - previewSize / 2);
+  tempContext.lineTo(x - (previewSize / 2) * Math.sqrt(3) / 2, y + previewSize / 2);
+  tempContext.lineTo(x + (previewSize / 2) * Math.sqrt(3) / 2, y + previewSize / 2);
+  tempContext.fillStyle = this.selectedColor;
+  tempContext.fill();
+  tempContext.closePath();
+  break;
+  default:
+  break;
+  }
+
+  // Reset global alpha after drawing the preview shape on the temporary canvas
+  tempContext.globalAlpha = 1;
+  },drawPreview(event) {
+  },
   draw(event) {
   if (!this.drawing) return;
 
@@ -90,14 +153,34 @@
   const y = event.clientY - rect.top;
 
   context.fillStyle = this.selectedColor;
-  if (this.drawingMode === 'dot') {
+  switch (this.drawingMode) {
+  case 'dot':
   context.fillRect(x, y, 5, 5);
-  }else if (this.drawingMode === 'square') {
-
-  } else if (this.drawingMode === 'circle') {
-
-  } else if (this.drawingMode === 'triangle') {
-
+  break;
+  case 'square':
+  const squareSize = 30; // Adjust the size as needed
+  const squareX = x - squareSize / 2;
+  const squareY = y - squareSize / 2;
+  context.fillRect(squareX, squareY, squareSize, squareSize);
+  break;
+  case 'circle':
+  const circleSize = 30; // Adjust the size as needed
+  context.beginPath();
+  context.arc(x, y, circleSize / 2, 0, 2 * Math.PI);
+  context.fill();
+  context.closePath();
+  break;
+  case 'triangle':
+  const triangleSize = 30; // Adjust the size as needed
+  context.beginPath();
+  context.moveTo(x, y - triangleSize / 2);
+  context.lineTo(x - (triangleSize / 2) * Math.sqrt(3) / 2, y + triangleSize / 2);
+  context.lineTo(x + (triangleSize / 2) * Math.sqrt(3) / 2, y + triangleSize / 2);
+  context.fill();
+  context.closePath();
+  break;
+  default:
+  break;
   }
   },
   },
@@ -149,7 +232,12 @@
   margin: auto;
   justify-content: center;
   }
-
+  .preview-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  }
   .palette div {
   width: 4vw;
   height: 4vh;
