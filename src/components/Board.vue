@@ -1,5 +1,10 @@
 <template>
-
+  <div>
+    <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
+    <div class="palette">
+      <div v-for="(color, index) in paletteColors" :key="index" @click="selectColor(color)" :style="{ backgroundColor: color }"></div>
+    </div>
+  </div>
 </template>
 
 <script>
