@@ -1,6 +1,9 @@
 <template>
   <div>
     <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
+    <div class="palette">
+      <div v-for="(color, index) in paletteColors" :key="index" @click="selectColor(color)" :style="{ backgroundColor: color }"></div>
+    </div>
   </div>
 </template>
 
@@ -9,6 +12,8 @@
   data() {
   return {
   drawing: false,
+  selectedColor: 'red',
+  paletteColors: ['#ff0000','#00ff00', '#0000ff',],
   };
   },
   methods: {
@@ -30,7 +35,7 @@
   const y = event.clientY - rect.top;
 
   // Set the color to red
-  context.fillStyle = 'red';
+  context.fillStyle = this.selectedColor;
   context.fillRect(x, y, 5, 5);
   },
   },
@@ -47,13 +52,27 @@
   canvas.style.display = 'block';
 
   // Set initial color
-  context.fillStyle = 'red';
+  context.fillStyle = this.selectedColor;
+  },
+  selectColor(color){
+  this.selectedColor=color;
   },
   };
 </script>
 
 <style scoped="">
   canvas {
-  border: 3px solid #000; /* Add a border for better visibility */
+  border: 3px solid #000; 
+  }
+  .palette {
+  display: flex;
+  margin:auto;
+  justify-content:center;
+  }
+  .palette div {
+  width: 4vw;
+  height:4vh;
+  cursor:pointer;
+  border: 1px solid #000;
   }
 </style>
