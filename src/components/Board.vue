@@ -93,7 +93,7 @@
   if (this.drawingMode === 'dot') {
   context.fillRect(x, y, 5, 5);
   }else if (this.drawingMode === 'square') {
- 
+
   } else if (this.drawingMode === 'circle') {
 
   } else if (this.drawingMode === 'triangle') {
