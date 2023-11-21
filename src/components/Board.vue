@@ -16,7 +16,7 @@
         </button>
       </div>
       <div class="canvas-container">
-        <div class="canvas-wrapper">
+        <div class="canvas-wrapper" @mousemove="drawPreview">
           <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
         </div>
       </div>
@@ -36,124 +36,113 @@
 </template>
 
 <script>
-import { Icon } from '@iconify/vue';
+  import { Icon } from '@iconify/vue';
 
-export default {
+  export default {
   components: {
-    Icon,
+  Icon,
   },
   data() {
-    return {
-      drawing: false,
-      selectedColor: 'red',
-      paletteColors: ['#ff0000', '#ffae00', '#ffff5c', '#00ff00', '#0000ff', '#3f0fff'],
-      drawingMode: 'dot',
-      previewShape: null,
-    };
+  return {
+  drawing: false,
+  selectedColor: 'red',
+  paletteColors: ['#ff0000', '#ffae00', '#ffff5c', '#00ff00', '#0000ff', '#3f0fff'],
+  drawingMode: 'dot',
+  previewShape: null,
+  };
   },
   methods: {
-    setDrawingMode(mode) {
-      this.drawingMode = mode;
-    },
-    startDrawing(event) {
-      this.drawing = true;
-      this.draw(event);
-    },
-    stopDrawing() {
-      this.drawing = false;
-      this.previewShape = null;
-    },
-    clearCanvas() {
-      const canvas = this.$refs.canvas;
-      const context = canvas.getContext('2d');
+  setDrawingMode(mode) {
+  this.drawingMode = mode;
+  },
+  draw(event) {
+  if (!this.drawing) return;
+  const canvas = this.$refs.canvas;
+  const context = canvas.getContext('2d');
 
-      context.fillStyle = 'white';
-      context.fillRect(0, 0, canvas.width, canvas.height);
-    },
-    selectColor(color) {
-      this.selectedColor = color;
-    },
-    downloadCanvas() {
-      const canvas = this.$refs.canvas;
-      const dataUrl = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.href = dataUrl;
-      link.download = 'drawing.png';
-      link.click();
-    },
-    draw(event) {
-      const canvas = this.$refs.canvas;
-      const context = canvas.getContext('2d');
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
 
-      const rect = canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
+  // Clear previous highlight
+  context.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Clear previous highlight
-      context.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw preview
-      if (this.drawingMode !== 'dot' && this.drawing) {
-        this.previewShape = { x, y };
-        this.drawShapePreview(context, x, y);
-      }
 
-      // Draw on canvas
-      if (this.drawing) {
-        context.fillStyle = this.selectedColor;
+  if (this.drawing) {
+  context.fillStyle = this.selectedColor;
 
-        if (this.drawingMode === 'dot') {
-          context.fillRect(x, y, 5, 5);
-        } else if (this.drawingMode === 'square') {
-          // Draw square logic
-        } else if (this.drawingMode === 'circle') {
-          // Draw circle logic
-        } else if (this.drawingMode === 'triangle') {
-          // Draw triangle logic
-        }
-      }
-    },
-    drawShapePreview(context, x, y) {
-      context.globalAlpha = 0.3;
-      context.fillStyle = 'blue'; // Change color as needed
+  if (this.drawingMode === 'dot') {
+  context.fillRect(x, y, 5, 5);
+  } else if (this.drawingMode === 'square') {
+  // Draw square logic
+  } else if (this.drawingMode === 'circle') {
+  // Draw circle logic
+  } else if (this.drawingMode === 'triangle') {
+  // Draw triangle logic
+  }
+  }
+  },
 
-      if (this.drawingMode === 'square') {
-        const size = 50;
-        context.fillRect(x - size / 2, y - size / 2, size, size);
-      } else if (this.drawingMode === 'circle') {
-        const radius = 25;
-        context.beginPath();
-        context.arc(x, y, radius, 0, 2 * Math.PI);
-        context.fill();
-      } else if (this.drawingMode === 'triangle') {
-        const size = 50;
-        context.beginPath();
-        context.moveTo(x, y - size / 2);
-        context.lineTo(x + size / 2, y + size / 2);
-        context.lineTo(x - size / 2, y + size / 2);
-        context.closePath();
-        context.fill();
-      }
+  startDrawing(event) {
+  this.drawing = true;
+  this.draw(event);
+  },
 
-      context.globalAlpha = 1.0;
-    },
+  stopDrawing() {
+  this.drawing = false;
+  this.previewShape = null;
+  },
+  clearCanvas() {
+  const canvas = this.$refs.canvas;
+  const context = canvas.getContext('2d');
+
+  context.fillStyle = 'white';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  },
+  selectColor(color) {
+  this.selectedColor = color;
+  },
+  drawPreview(event) {
+  const canvas = this.$refs.canvas;
+  const context = canvas.getContext('2d');
+
+
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  if (this.drawingMode !== 'dot' && this.drawing) {
+  this.previewShape = { x, y };
+  this.drawShapePreview(context, x, y);
+  }
+  },
+  downloadCanvas() {
+  const canvas = this.$refs.canvas;
+  const dataUrl = canvas.toDataURL('image/png');
+  const link = document.createElement('a');
+  link.href = dataUrl;
+  link.download = 'drawing.png';
+  link.click();
+  },
+
   },
   mounted() {
-    const canvas = this.$refs.canvas;
-    const context = canvas.getContext('2d');
+  const canvas = this.$refs.canvas;
+  const context = canvas.getContext('2d');
 
-    // Set canvas size
-    canvas.width = 0.8 * window.innerWidth;
-    canvas.height = 0.6 * window.innerHeight;
+  // Set canvas size
+  canvas.width = 0.8 * window.innerWidth;
+  canvas.height = 0.6 * window.innerHeight;
 
-    // Center the canvas
-    canvas.style.display = 'block';
-    this.clearCanvas();
+  // Center the canvas
+  canvas.style.display = 'block';
+  this.clearCanvas();
 
-    // Set initial color
-    context.fillStyle = this.selectedColor;
+  // Set initial color
+  context.fillStyle = this.selectedColor;
   },
-};
+  };
 </script>
 
 <style scoped="">
