@@ -1,26 +1,35 @@
 <template>
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <div className="links">
+    <a href="https://www.linkedin.com/in/ryangormican/">
+      <Icon icon="mdi:linkedin" color="#0e76a8" width="60" />
+    </a>
+    <a href="https://github.com/RyanGormican/PaintersParadise">
+      <Icon icon="mdi:github" color="#e8eaea" width="60" />
+    </a>
+    <a href="https://ryangormicanportfoliohub.vercel.app/">
+      <Icon icon="teenyicons:computer-outline" color="#199c35" width="60" />
+    </a>
+  </div>
+  <div class="title">
+    <h1> PaintersParadise</h1>
+  </div>
+  <Board/>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
-
-export default defineComponent({
+  import { defineComponent } from 'vue';
+  import Board from './components/Board.vue';
+  import { Icon } from '@iconify/vue';
+  export default defineComponent({
   name: 'App',
   components: {
-    HelloWorld
+  Board,
+  Icon,
   }
-});
+  });
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  @import '@/assets/styles.css';
+
 </style>
