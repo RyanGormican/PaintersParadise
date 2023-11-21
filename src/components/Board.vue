@@ -5,8 +5,11 @@
         <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
       </div>
       <div class="button-container">
-        <button class="clear-button" @click="clearCanvas">
+        <button class="button" @click="clearCanvas">
           <Icon icon="ph:trash" width="60" />
+        </button>
+        <button class="button" @click="downloadCanvas">
+          <Icon icon="material-symbols:download" width="60" />
         </button>
       </div>
     </div>
@@ -42,10 +45,19 @@
   const canvas = this.$refs.canvas;
   const context = canvas.getContext('2d');
 
-  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = 'white';
+  context.fillRect(0, 0, canvas.width, canvas.height);
   },
   selectColor(color) {
   this.selectedColor = color;
+  },
+  downloadCanvas() {
+  const canvas = this.$refs.canvas;
+  const dataUrl = canvas.toDataURL('image/png');
+  const link = document.createElement('a');
+  link.href = dataUrl;
+  link.download = 'drawing.png';
+  link.click();
   },
   draw(event) {
   if (!this.drawing) return;
@@ -71,7 +83,7 @@
 
   // Center the canvas
   canvas.style.display = 'block';
-
+  this.clearCanvas();
   // Set initial color
   context.fillStyle = this.selectedColor;
   },
@@ -95,7 +107,7 @@
   background-color: transparent;
   }
 
-  .clear-button {
+  .button {
   border: none;
   cursor: pointer;
   outline: none;
