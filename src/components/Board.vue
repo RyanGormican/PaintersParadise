@@ -82,65 +82,7 @@
   link.click();
   },
   drawPreview(event) {
-  const canvas = this.$refs.canvas;
-
-  if (!this.tempCanvas) {
-  // Create a temporary canvas and context
-  this.tempCanvas = document.createElement('canvas');
-  this.tempContext = this.tempCanvas.getContext('2d');
-  this.tempCanvas.width = canvas.width;
-  this.tempCanvas.height = canvas.height;
-
-  // Append the temporary canvas to the canvas wrapper
-  this.$refs.canvasWrapper.appendChild(this.tempCanvas);
-  }
-
-  const tempContext = this.tempContext;
-
-  const rect = canvas.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
-
-  // Clear previous preview on the temporary canvas
-  tempContext.clearRect(0, 0, this.tempCanvas.width, this.tempCanvas.height);
-
-  // Draw the shape preview on the temporary canvas
-  const previewSize = 30; // Adjust the size as needed
-  const previewX = x - previewSize / 2;
-  const previewY = y - previewSize / 2;
-
-  // Set global alpha for the preview shape on the temporary canvas
-  tempContext.globalAlpha = 0.5; // Adjust the opacity as needed
-
-  // Draw the selected shape preview on the temporary canvas
-  switch (this.drawingMode) {
-  case 'square':
-  tempContext.fillStyle = this.selectedColor;
-  tempContext.fillRect(previewX, previewY, previewSize, previewSize);
-  break;
-  case 'circle':
-  tempContext.beginPath();
-  tempContext.arc(x, y, previewSize / 2, 0, 2 * Math.PI);
-  tempContext.fillStyle = this.selectedColor;
-  tempContext.fill();
-  tempContext.closePath();
-  break;
-  case 'triangle':
-  tempContext.beginPath();
-  tempContext.moveTo(x, y - previewSize / 2);
-  tempContext.lineTo(x - (previewSize / 2) * Math.sqrt(3) / 2, y + previewSize / 2);
-  tempContext.lineTo(x + (previewSize / 2) * Math.sqrt(3) / 2, y + previewSize / 2);
-  tempContext.fillStyle = this.selectedColor;
-  tempContext.fill();
-  tempContext.closePath();
-  break;
-  default:
-  break;
-  }
-
-  // Reset global alpha after drawing the preview shape on the temporary canvas
-  tempContext.globalAlpha = 1;
-  },drawPreview(event) {
+ 
   },
   draw(event) {
   if (!this.drawing) return;
