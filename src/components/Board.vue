@@ -16,7 +16,7 @@
         </button>
       </div>
       <div class="canvas-container">
-        <div class="canvas-wrapper" @mousemove="drawPreview">
+        <div class="canvas-wrapper">
           <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
         </div>
       </div>
@@ -48,50 +48,18 @@
   selectedColor: 'red',
   paletteColors: ['#ff0000', '#ffae00', '#ffff5c', '#00ff00', '#0000ff', '#3f0fff'],
   drawingMode: 'dot',
-  previewShape: null,
   };
   },
   methods: {
-  setDrawingMode(mode) {
-  this.drawingMode = mode;
-  },
-  draw(event) {
-  if (!this.drawing) return;
-  const canvas = this.$refs.canvas;
-  const context = canvas.getContext('2d');
-
-  const rect = canvas.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
-
-  // Clear previous highlight
-  context.clearRect(0, 0, canvas.width, canvas.height);
-
-
-
-  if (this.drawing) {
-  context.fillStyle = this.selectedColor;
-
-  if (this.drawingMode === 'dot') {
-  context.fillRect(x, y, 5, 5);
-  } else if (this.drawingMode === 'square') {
-  // Draw square logic
-  } else if (this.drawingMode === 'circle') {
-  // Draw circle logic
-  } else if (this.drawingMode === 'triangle') {
-  // Draw triangle logic
-  }
-  }
-  },
-
   startDrawing(event) {
   this.drawing = true;
   this.draw(event);
   },
-
+  setDrawingMode(mode) {
+  this.drawingMode = mode;
+  },
   stopDrawing() {
   this.drawing = false;
-  this.previewShape = null;
   },
   clearCanvas() {
   const canvas = this.$refs.canvas;
@@ -103,20 +71,6 @@
   selectColor(color) {
   this.selectedColor = color;
   },
-  drawPreview(event) {
-  const canvas = this.$refs.canvas;
-  const context = canvas.getContext('2d');
-
-
-  const rect = canvas.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
-
-  if (this.drawingMode !== 'dot' && this.drawing) {
-  this.previewShape = { x, y };
-  this.drawShapePreview(context, x, y);
-  }
-  },
   downloadCanvas() {
   const canvas = this.$refs.canvas;
   const dataUrl = canvas.toDataURL('image/png');
@@ -125,7 +79,27 @@
   link.download = 'drawing.png';
   link.click();
   },
+  draw(event) {
+  if (!this.drawing) return;
 
+  const canvas = this.$refs.canvas;
+  const context = canvas.getContext('2d');
+
+  const rect = canvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  context.fillStyle = this.selectedColor;
+  if (this.drawingMode === 'dot') {
+  context.fillRect(x, y, 5, 5);
+  }else if (this.drawingMode === 'square') {
+ 
+  } else if (this.drawingMode === 'circle') {
+
+  } else if (this.drawingMode === 'triangle') {
+
+  }
+  },
   },
   mounted() {
   const canvas = this.$refs.canvas;
@@ -138,7 +112,6 @@
   // Center the canvas
   canvas.style.display = 'block';
   this.clearCanvas();
-
   // Set initial color
   context.fillStyle = this.selectedColor;
   },
@@ -146,41 +119,41 @@
 </script>
 
 <style scoped="">
-.button-container {
+  .button-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
+  }
 
-.button-container-left,
-.button-container-right {
+  .button-container-left,
+  .button-container-right {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   background-color: transparent;
-}
+  }
 
-.button {
+  .button {
   border: none;
   cursor: pointer;
   outline: none;
   background-color: transparent;
-}
+  }
 
-canvas {
+  canvas {
   border: 3px solid #000;
-}
+  }
 
-.palette {
+  .palette {
   display: flex;
   margin: auto;
   justify-content: center;
-}
+  }
 
-.palette div {
-  width: 4.5vw;
-  height: 4.5vh;
+  .palette div {
+  width: 4vw;
+  height: 4vh;
   cursor: pointer;
   border: 1px solid #000;
-}
+  }
 </style>
