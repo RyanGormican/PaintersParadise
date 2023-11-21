@@ -16,7 +16,7 @@
         </button>
       </div>
       <div class="canvas-container">
-        <div class="canvas-wrapper">
+        <div class="canvas-wrapper"  @mousemove="drawPreview">
           <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
         </div>
       </div>
@@ -46,7 +46,7 @@
   return {
   drawing: false,
   selectedColor: 'red',
-  paletteColors: ['#ff0000', '#ffae00', '#ffff5c', '#00ff00', '#0000ff', '#3f0fff'],
+  paletteColors: ['#ff0000', '#ffae00', '#ffff5c', '#00ff00', '#188533','#1df2f2','#0000ff', '#8b8ee0', '#3f0fff','#ee3ff2','ffffff','#000000',],
   drawingMode: 'dot',
   };
   },
