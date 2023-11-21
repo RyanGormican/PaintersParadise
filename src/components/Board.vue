@@ -46,7 +46,7 @@
   return {
   drawing: false,
   selectedColor: 'red',
-  paletteColors: ['#ff0000', '#ffae00', '#ffff5c', '#00ff00', '#188533','#1df2f2','#0000ff', '#8b8ee0', '#3f0fff','#ee3ff2','ffffff','#000000',],
+  paletteColors: ['#ff0000', '#ffae00', '#ffff5c', '#00ff00', '#188533','#1df2f2','#0000ff', '#8b8ee0', '#3f0fff','#ee3ff2','white','#000000',],
   drawingMode: 'dot',
   tempCanvas: null,
   tempContext: null,
