@@ -100,20 +100,20 @@
   context.fillRect(x, y, 5, 5);
   break;
   case 'square':
-  const squareSize = 30; // Adjust the size as needed
+  const squareSize = 30; 
   const squareX = x - squareSize / 2;
   const squareY = y - squareSize / 2;
   context.fillRect(squareX, squareY, squareSize, squareSize);
   break;
   case 'circle':
-  const circleSize = 30; // Adjust the size as needed
+  const circleSize = 30; 
   context.beginPath();
   context.arc(x, y, circleSize / 2, 0, 2 * Math.PI);
   context.fill();
   context.closePath();
   break;
   case 'triangle':
-  const triangleSize = 30; // Adjust the size as needed
+  const triangleSize = 30; 
   context.beginPath();
   context.moveTo(x, y - triangleSize / 2);
   context.lineTo(x - (triangleSize / 2) * Math.sqrt(3) / 2, y + triangleSize / 2);
@@ -129,7 +129,6 @@
   mounted() {
   const canvas = this.$refs.canvas;
   const context = canvas.getContext('2d');
-
   // Set canvas size
   canvas.width = 0.8 * window.innerWidth;
   canvas.height = 0.6 * window.innerHeight;
