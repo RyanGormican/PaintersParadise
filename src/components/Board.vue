@@ -1,10 +1,26 @@
 <template>
   <div>
-    <div class="canvas-container">
-      <div class="canvas-wrapper">
-        <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
+    <div class="button-container">
+      <div class="button-container-left">
+        <button class="button" @click="setDrawingMode('dot')">
+          <Icon icon="mdi:dot" width="60" />
+        </button>
+        <button class="button" @click="setDrawingMode('square')">
+          <Icon icon="material-symbols:square" width="60" />
+        </button>
+        <button class="button" @click="setDrawingMode('circle')">
+          <Icon icon="material-symbols:circle" width="60" />
+        </button>
+        <button class="button" @click="setDrawingMode('triangle')">
+          <Icon icon="mdi:triangle" width="60" />
+        </button>
       </div>
-      <div class="button-container">
+      <div class="canvas-container">
+        <div class="canvas-wrapper">
+          <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
+        </div>
+      </div>
+      <div class="button-container-right">
         <button class="button" @click="clearCanvas">
           <Icon icon="ph:trash" width="60" />
         </button>
@@ -31,12 +47,16 @@
   drawing: false,
   selectedColor: 'red',
   paletteColors: ['#ff0000', '#ffae00', '#ffff5c', '#00ff00', '#0000ff', '#3f0fff'],
+  drawingMode: 'dot',
   };
   },
   methods: {
   startDrawing(event) {
   this.drawing = true;
   this.draw(event);
+  },
+  setDrawingMode(mode) {
+  this.drawingMode = mode;
   },
   stopDrawing() {
   this.drawing = false;
@@ -70,7 +90,15 @@
   const y = event.clientY - rect.top;
 
   context.fillStyle = this.selectedColor;
+  if (this.drawingMode === 'dot') {
   context.fillRect(x, y, 5, 5);
+  }else if (this.drawingMode === 'square') {
+ 
+  } else if (this.drawingMode === 'circle') {
+
+  } else if (this.drawingMode === 'triangle') {
+
+  }
   },
   },
   mounted() {
@@ -78,7 +106,7 @@
   const context = canvas.getContext('2d');
 
   // Set canvas size
-  canvas.width = 0.6 * window.innerWidth;
+  canvas.width = 0.8 * window.innerWidth;
   canvas.height = 0.6 * window.innerHeight;
 
   // Center the canvas
@@ -91,16 +119,14 @@
 </script>
 
 <style scoped="">
-  .canvas-container {
-  display: flex;
-  justify-content: center;
-  }
-
-  .canvas-wrapper {
-  position: relative;
-  }
-
   .button-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  }
+
+  .button-container-left,
+  .button-container-right {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -131,4 +157,3 @@
   border: 1px solid #000;
   }
 </style>
-
