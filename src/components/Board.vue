@@ -1,6 +1,9 @@
 <template>
   <div>
     <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
+    <button class="clear-button" @click="clearCanvas">
+      <Icon icon="ph:trash" height='60' width='60' />
+    </button>
     <div class="palette">
       <div v-for="(color, index) in paletteColors" :key="index" @click="selectColor(color)" :style="{ backgroundColor: color }"></div>
     </div>
@@ -23,6 +26,12 @@
   },
   stopDrawing() {
   this.drawing = false;
+  },
+  clearCanvas() {
+  const canvas=this.$refs.canvas;
+  const context = canvas.getContext('2d');
+
+  context.clearRect(0,0,canvas.width,canvas.height);
   },
   selectColor(color){
   this.selectedColor=color;
@@ -61,8 +70,15 @@
 
 <style scoped="">
   canvas {
-  border: 3px solid #000; 
+  border: 3px solid #000;
   }
+  .clear-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  }
+
   .palette {
   display: flex;
   margin:auto;
