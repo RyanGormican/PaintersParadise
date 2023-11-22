@@ -25,12 +25,12 @@
         </button>
       </div>
       <div class="canvas-container">
-        <div class="canvas-wrapper" @mousemove="drawPreview">
-          <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
-        </div>
-        <div class="canvas-wrapper preview-canvas">
-          <canvas ref="previewCanvas"></canvas>
-        </div>
+  <div class="canvas-wrapper" @mousemove="drawPreview($event,$refs.canvas)" @mousedown="startDrawing">
+    <canvas ref="canvas" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
+  </div>
+  <div class="canvas-wrapper preview-canvas"  @mousedown="startDrawing">
+    <canvas ref="previewCanvas"></canvas>
+  </div>
       </div>
       <div class="button-container-right">
         <button class="button" @click="clearCanvas">
@@ -122,14 +122,15 @@
   link.download = 'drawing.png';
   link.click();
   },
-    drawPreview(event) {
+    drawPreview(event,realCanvas) {
       const previewCanvas = this.$refs.previewCanvas;
       const previewContext = previewCanvas.getContext('2d');
-  previewCanvas.style.opacity =0.5;
+  previewCanvas.style.opacity =0.8;
       previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
 
       previewContext.fillStyle = this.selectedColor;
-
+      previewCanvas.width = realCanvas.width;
+      previewCanvas.height = realCanvas.height;
       const rect = previewCanvas.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
@@ -352,7 +353,22 @@ case 'heart':
   cursor: pointer;
   border: 1px solid #000;
   }
+  .canvas-container {
+    position: relative;
+  }
 
+  .canvas-wrapper {
+    position: relative;
+    z-index: 1; 
+  }
+
+  .preview-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 2; 
+  }
   
 
   .custom-palette-color button {
