@@ -24,13 +24,13 @@
           <Icon icon="ph:diamond-fill" width="60" />
         </button>
       </div>
-      <div class="canvas-container">
-  <div class="canvas-wrapper" @mousemove="drawPreview($event,$refs.canvas)" @mousedown="startDrawing">
-    <canvas ref="canvas" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
-  </div>
-  <div class="canvas-wrapper preview-canvas"  @mousedown="startDrawing">
-    <canvas ref="previewCanvas"></canvas>
-  </div>
+     <div class="canvas-container">
+    <div class="canvas-wrapper" @mousemove="drawPreview($event, $refs.canvas)">
+      <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
+    </div>
+    <div class="canvas-wrapper preview-canvas" :style="{ opacity: previewOpacity }" @mousemove="drawPreview($event, $refs.canvas)">
+      <canvas ref="previewCanvas"></canvas>
+    </div>
       </div>
       <div class="button-container-right">
         <button class="button" @click="clearCanvas">
@@ -125,10 +125,12 @@
     drawPreview(event,realCanvas) {
       const previewCanvas = this.$refs.previewCanvas;
       const previewContext = previewCanvas.getContext('2d');
-  previewCanvas.style.opacity =0.8;
+
       previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
 
       previewContext.fillStyle = this.selectedColor;
+        previewCanvas.style.opacity =0.9;
+       
       previewCanvas.width = realCanvas.width;
       previewCanvas.height = realCanvas.height;
       const rect = previewCanvas.getBoundingClientRect();
