@@ -14,7 +14,16 @@
         <button class="button" @click="setDrawingMode('triangle')">
           <Icon icon="mdi:triangle" width="60" />
         </button>
-      </div>
+      <button class="button" @click="setDrawingMode('rectangle')">
+        <Icon icon="material-symbols:rectangle" width="60" />
+      </button>
+      <button class="button" @click="setDrawingMode('heart')">
+        <Icon icon="mdi:heart" width="60" />
+      </button>
+      <button class="button" @click="setDrawingMode('diamond')">
+        <Icon icon="ph:diamond-fill" width="60" />
+      </button>
+     </div>
       <div class="canvas-container">
         <div class="canvas-wrapper"  @mousemove="drawPreview">
           <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
@@ -121,6 +130,35 @@
   context.fill();
   context.closePath();
   break;
+ case 'rectangle':
+      const rectangleWidth = 40;
+      const rectangleHeight = 30;
+      const rectangleX = x - rectangleWidth / 2;
+      const rectangleY = y - rectangleHeight / 2;
+      context.fillRect(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+      break;
+case 'heart':
+      const heartWidth = 40;
+      const heartHeight = 40;
+
+      context.beginPath();
+      context.moveTo(x, y - heartHeight / 2);
+      context.bezierCurveTo(x + heartWidth / 2.5, y - heartHeight, x + heartWidth / 4, y - heartHeight / 3, x, y);
+      context.bezierCurveTo(x - heartWidth / 4, y - heartHeight / 3, x - heartWidth / 2.5, y - heartHeight, x, y - heartHeight / 2);
+      context.bezierCurveTo(x, y - heartHeight / 2.2, x, y - heartHeight / 2.5, x, y - heartHeight / 2);
+      context.closePath();
+      context.fill();
+      break;
+    case 'diamond':
+      const diamondSize = 30;
+      context.beginPath();
+      context.moveTo(x, y - diamondSize / 2);
+      context.lineTo(x + diamondSize / 2, y);
+      context.lineTo(x, y + diamondSize / 2);
+      context.lineTo(x - diamondSize / 2, y);
+      context.closePath();
+      context.fill();
+      break;
   default:
   break;
   }
