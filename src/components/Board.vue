@@ -41,16 +41,16 @@
     <div class="palette">
       <div v-for="(color, index) in paletteColors" :key="index" @click="selectColor(color)" :style="{ backgroundColor: color }"></div>
     </div>
-  <div class="palette">
+  <div class="palettecustom">
       <div
         v-for="(color, index) in customPalette"
         :key="index"
         :style="{ backgroundColor: color }"
         @click="selectColor(color)"
       >
-        <button>
+        <button  class="button">
           <Icon icon="solar:palette-bold" width="20" />
-          <input type="color" v-model="customPalette[index]" @input="applyColor(index)"  />
+          <input type="color" v-model="customPalette[index]" @change="applyColor(index)"  />
         </button>
       </div>
     </div>
@@ -100,6 +100,7 @@
   applyColor(index) {
       if (index === this.selectedCustomPaletteIndex) {
         this.selectedColor = this.customPalette[index];
+       
       }
       },
   downloadCanvas() {
@@ -113,16 +114,6 @@
   drawPreview(event) {
  
   },
-  openColorPicker(index) {
-      const selectedColor = prompt('Select a color:');
-      if (selectedColor) {
-        this.$set(this.customPalette, index, selectedColor);
-        if (index === this.selectedCustomPaletteIndex) {
-          this.selectedColor = selectedColor; 
-        }
-      }
-    },
-    
   draw(event) {
   if (!this.drawing) return;
 
@@ -235,8 +226,14 @@ case 'heart':
   canvas {
   border: 3px solid #000;
   }
-
+  
   .palette {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  }
+  .palettecustom
+  {
   display: flex;
   margin: auto;
   justify-content: center;
@@ -252,8 +249,13 @@ case 'heart':
   height: 4vh;
   cursor: pointer;
   border: 1px solid #000;
+  }  
+ .palettecustom div {
+  width: 4vw;
+  height: 6vh;
+  cursor: pointer;
+  border: 1px solid #000;
   }
- 
 
   
 
