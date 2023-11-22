@@ -49,7 +49,7 @@
     </div>
   <div class="palettecustom">
       <div
-        v-for="(color, index) in customPaletteRows"
+        v-for="(color, index) in customPalette"
         :key="index"
         :style="{ backgroundColor: color }"
         @click="selectColor(color)"
@@ -70,25 +70,16 @@
   components: {
   Icon,
   },
-   computed: {
-    customPaletteRows() {
-      const rows = [];
-      for (let i = 0; i < this.customPalette.length; i += 24) {
-        rows.push(this.customPalette.slice(i, i + 24));
-      }
-      return rows;
-    },
-  },
   data() {
   return {
   drawing: false,
   selectedColor: 'red',
-  paletteColors: ['#ff0000', '#ffae00', '#ffff5c', '#00ff00', '#188533','#1df2f2','#0000ff', '#8b8ee0', '#3f0fff','#ee3ff2','white','#000000',],
+  paletteColors: ['#ff0000','#ff6f60','#ffa06a', '#ffae00','#ffd702','#ffff5c','#00ff00', '#32cd33', '#32cd32',  '#188533','#1df2f2','#6495ee',  '#0000ff', '#8b8ee0','#3f0fff','#ee3ff2','white', '#808081','#70553e','#000000',],
   drawingMode: 'dot',
   tempCanvas: null,
   size: 5,
   tempContext: null,
-  customPalette: Array.from({ length: 72 }, () => 'white'), 
+  customPalette: Array.from({ length: 20 }, () => 'white'), 
   selectedCustomPaletteIndex: null,
   };
   },
