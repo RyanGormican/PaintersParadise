@@ -14,19 +14,22 @@
         <button class="button" @click="setDrawingMode('triangle')">
           <Icon icon="mdi:triangle" width="60" />
         </button>
-      <button class="button" @click="setDrawingMode('rectangle')">
-        <Icon icon="material-symbols:rectangle" width="60" />
-      </button>
-      <button class="button" @click="setDrawingMode('heart')">
-        <Icon icon="mdi:heart" width="60" />
-      </button>
-      <button class="button" @click="setDrawingMode('diamond')">
-        <Icon icon="ph:diamond-fill" width="60" />
-      </button>
-     </div>
+        <button class="button" @click="setDrawingMode('rectangle')">
+          <Icon icon="material-symbols:rectangle" width="60" />
+        </button>
+        <button class="button" @click="setDrawingMode('heart')">
+          <Icon icon="mdi:heart" width="60" />
+        </button>
+        <button class="button" @click="setDrawingMode('diamond')">
+          <Icon icon="ph:diamond-fill" width="60" />
+        </button>
+      </div>
       <div class="canvas-container">
-        <div class="canvas-wrapper"  @mousemove="drawPreview">
+        <div class="canvas-wrapper" @mousemove="drawPreview">
           <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
+        </div>
+        <div class="canvas-wrapper preview-canvas">
+          <canvas ref="previewCanvas"></canvas>
         </div>
       </div>
       <div class="button-container-right">
@@ -36,27 +39,27 @@
         <button class="button" @click="downloadCanvas">
           <Icon icon="material-symbols:download" width="60" />
         </button>
-       <button class="button" @click="incrementSize">
-        <Icon icon="mdi:increment" width="60" />
-      </button>
-      <button class="button" @click="decrementSize">
-        <Icon icon="mdi:decrement" width="60" />
-      </button>
+        <button class="button" @click="incrementSize">
+          <Icon icon="mdi:increment" width="60" />
+        </button>
+        <button class="button" @click="decrementSize">
+          <Icon icon="mdi:decrement" width="60" />
+        </button>
       </div>
     </div>
     <div class="palette">
       <div v-for="(color, index) in paletteColors" :key="index" @click="selectColor(color)" :style="{ backgroundColor: color }"></div>
     </div>
-  <div class="palettecustom">
+    <div class="palettecustom">
       <div
         v-for="(color, index) in customPalette"
         :key="index"
         :style="{ backgroundColor: color }"
         @click="selectColor(color)"
       >
-        <button  class="button">
+        <button class="button">
           <Icon icon="solar:palette-bold" width="20" />
-          <input type="color" v-model="customPalette[index]" @change="applyColor(index)"  />
+          <input type="color" v-model="customPalette[index]" @change="applyColor(index)" />
         </button>
       </div>
     </div>
@@ -81,6 +84,7 @@
   tempContext: null,
   customPalette: Array.from({ length: 20 }, () => 'white'), 
   selectedCustomPaletteIndex: null,
+  previewContext: null,
   };
   },
   methods: {
@@ -118,9 +122,77 @@
   link.download = 'drawing.png';
   link.click();
   },
-  drawPreview(event) {
- 
-  },
+    drawPreview(event) {
+      const previewCanvas = this.$refs.previewCanvas;
+      const previewContext = previewCanvas.getContext('2d');
+  previewCanvas.style.opacity =0.5;
+      previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+
+      previewContext.fillStyle = this.selectedColor;
+
+      const rect = previewCanvas.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      switch (this.drawingMode) {
+        case 'dot':
+          previewContext.fillRect(x, y, this.size, this.size);
+          break;
+        case 'square':
+          const squareSize = this.size * 6;
+          const squareX = x - squareSize / 2;
+          const squareY = y - squareSize / 2;
+          previewContext.fillRect(squareX, squareY, squareSize, squareSize);
+          break;
+        case 'circle':
+          const circleSize = this.size * 6;
+          previewContext.beginPath();
+          previewContext.arc(x, y, circleSize / 2, 0, 2 * Math.PI);
+          previewContext.fill();
+          previewContext.closePath();
+          break;
+        case 'triangle':
+          const triangleSize = this.size * 6;
+          previewContext.beginPath();
+          previewContext.moveTo(x, y - triangleSize / 2);
+          previewContext.lineTo(x - (triangleSize / 2) * Math.sqrt(3) / 2, y + triangleSize / 2);
+          previewContext.lineTo(x + (triangleSize / 2) * Math.sqrt(3) / 2, y + triangleSize / 2);
+          previewContext.fill();
+          previewContext.closePath();
+          break;
+        case 'rectangle':
+          const rectangleWidth = this.size * 8;
+          const rectangleHeight = this.size * 6;
+          const rectangleX = x - rectangleWidth / 2;
+          const rectangleY = y - rectangleHeight / 2;
+          previewContext.fillRect(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+          break;
+        case 'heart':
+          const heartWidth = this.size * 8;
+          const heartHeight = this.size * 8;
+
+          previewContext.beginPath();
+          previewContext.moveTo(x, y - heartHeight / 2);
+          previewContext.bezierCurveTo(x + heartWidth / 2.5, y - heartHeight, x + heartWidth / 4, y - heartHeight / 3, x, y);
+          previewContext.bezierCurveTo(x - heartWidth / 4, y - heartHeight / 3, x - heartWidth / 2.5, y - heartHeight, x, y - heartHeight / 2);
+          previewContext.bezierCurveTo(x, y - heartHeight / 2.2, x, y - heartHeight / 2.5, x, y - heartHeight / 2);
+          previewContext.closePath();
+          previewContext.fill();
+          break;
+        case 'diamond':
+          const diamondSize = this.size * 6;
+          previewContext.beginPath();
+          previewContext.moveTo(x, y - diamondSize / 2);
+          previewContext.lineTo(x + diamondSize / 2, y);
+          previewContext.lineTo(x, y + diamondSize / 2);
+          previewContext.lineTo(x - diamondSize / 2, y);
+          previewContext.closePath();
+          previewContext.fill();
+          break;
+        default:
+          break;
+      }
+    },
   incrementSize() {
         this.size = this.size+ 1;
       },
