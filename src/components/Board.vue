@@ -2,9 +2,6 @@
   <div>
     <div class="button-container">
       <div class="button-container-left">
-        <button class="button" @click="setDrawingMode('dot')">
-          <Icon icon="mdi:dot" width="60" />
-        </button>
         <button class="button" @click="setDrawingMode('square')">
           <Icon icon="material-symbols:square" width="60" />
         </button>
@@ -28,7 +25,7 @@
     <div class="canvas-wrapper" @mousemove="drawPreview($event, $refs.canvas)">
       <canvas ref="canvas" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing"></canvas>
     </div>
-    <div class="canvas-wrapper preview-canvas" :style="{ opacity: previewOpacity }" @mousemove="drawPreview($event, $refs.canvas)">
+    <div class="canvas-wrapper preview-canvas"  :style="{ opacity: 0.9 }"  @mousemove="drawPreview($event, $refs.canvas)">
       <canvas ref="previewCanvas"></canvas>
     </div>
       </div>
@@ -78,7 +75,7 @@
   drawing: false,
   selectedColor: 'red',
   paletteColors: ['#ff0000','#ff6f60','#ffa06a', '#ffae00','#ffd702','#ffff5c','#00ff00', '#32cd33', '#32cd32',  '#188533','#1df2f2','#6495ee',  '#0000ff', '#8b8ee0','#3f0fff','#ee3ff2','white', '#808081','#70553e','#000000',],
-  drawingMode: 'dot',
+  drawingMode: 'square',
   tempCanvas: null,
   size: 5,
   tempContext: null,
@@ -127,10 +124,8 @@
       const previewContext = previewCanvas.getContext('2d');
 
       previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-
       previewContext.fillStyle = this.selectedColor;
-        previewCanvas.style.opacity =0.9;
-       
+      previewCanvas.opacity = 0.6;
       previewCanvas.width = realCanvas.width;
       previewCanvas.height = realCanvas.height;
       const rect = previewCanvas.getBoundingClientRect();
@@ -138,24 +133,21 @@
       const y = event.clientY - rect.top;
 
       switch (this.drawingMode) {
-        case 'dot':
-          previewContext.fillRect(x, y, this.size, this.size);
-          break;
         case 'square':
-          const squareSize = this.size * 6;
+          const squareSize = this.size;
           const squareX = x - squareSize / 2;
           const squareY = y - squareSize / 2;
           previewContext.fillRect(squareX, squareY, squareSize, squareSize);
           break;
         case 'circle':
-          const circleSize = this.size * 6;
+          const circleSize = this.size;
           previewContext.beginPath();
           previewContext.arc(x, y, circleSize / 2, 0, 2 * Math.PI);
           previewContext.fill();
           previewContext.closePath();
           break;
         case 'triangle':
-          const triangleSize = this.size * 6;
+          const triangleSize = this.size;
           previewContext.beginPath();
           previewContext.moveTo(x, y - triangleSize / 2);
           previewContext.lineTo(x - (triangleSize / 2) * Math.sqrt(3) / 2, y + triangleSize / 2);
@@ -164,15 +156,15 @@
           previewContext.closePath();
           break;
         case 'rectangle':
-          const rectangleWidth = this.size * 8;
-          const rectangleHeight = this.size * 6;
+          const rectangleWidth = this.size*(4/3);
+          const rectangleHeight = this.size;
           const rectangleX = x - rectangleWidth / 2;
           const rectangleY = y - rectangleHeight / 2;
           previewContext.fillRect(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
           break;
         case 'heart':
-          const heartWidth = this.size * 8;
-          const heartHeight = this.size * 8;
+          const heartWidth = this.size;
+          const heartHeight = this.size;
 
           previewContext.beginPath();
           previewContext.moveTo(x, y - heartHeight / 2);
@@ -183,7 +175,7 @@
           previewContext.fill();
           break;
         case 'diamond':
-          const diamondSize = this.size * 6;
+          const diamondSize = this.size;
           previewContext.beginPath();
           previewContext.moveTo(x, y - diamondSize / 2);
           previewContext.lineTo(x + diamondSize / 2, y);
@@ -221,24 +213,21 @@
 
   context.fillStyle = this.selectedColor;
   switch (this.drawingMode) {
-  case 'dot':
-  context.fillRect(x, y,  this.size,  this.size);
-  break;
   case 'square':
-  const squareSize =  this.size*6; 
+  const squareSize =  this.size; 
   const squareX = x - squareSize / 2;
   const squareY = y - squareSize / 2;
   context.fillRect(squareX, squareY, squareSize, squareSize);
   break;
   case 'circle':
-  const circleSize =  this.size*6; 
+  const circleSize =  this.size; 
   context.beginPath();
   context.arc(x, y, circleSize / 2, 0, 2 * Math.PI);
   context.fill();
   context.closePath();
   break;
   case 'triangle':
-  const triangleSize =  this.size*6; 
+  const triangleSize =  this.size; 
   context.beginPath();
   context.moveTo(x, y - triangleSize / 2);
   context.lineTo(x - (triangleSize / 2) * Math.sqrt(3) / 2, y + triangleSize / 2);
@@ -247,15 +236,15 @@
   context.closePath();
   break;
  case 'rectangle':
-      const rectangleWidth =  this.size*8;
-      const rectangleHeight =  this.size*6;
+      const rectangleWidth =  this.size*(4/3);
+      const rectangleHeight =  this.size;
       const rectangleX = x - rectangleWidth / 2;
       const rectangleY = y - rectangleHeight / 2;
       context.fillRect(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
       break;
 case 'heart':
-      const heartWidth =  this.size*8;
-      const heartHeight =  this.size*8;
+      const heartWidth = this.size;
+      const heartHeight = this.size;
 
       context.beginPath();
       context.moveTo(x, y - heartHeight / 2);
@@ -266,7 +255,7 @@ case 'heart':
       context.fill();
       break;
     case 'diamond':
-      const diamondSize = this.size*6;
+      const diamondSize = this.size;
       context.beginPath();
       context.moveTo(x, y - diamondSize / 2);
       context.lineTo(x + diamondSize / 2, y);
