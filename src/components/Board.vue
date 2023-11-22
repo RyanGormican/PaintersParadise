@@ -36,6 +36,12 @@
         <button class="button" @click="downloadCanvas">
           <Icon icon="material-symbols:download" width="60" />
         </button>
+       <button class="button" @click="incrementSize">
+        <Icon icon="mdi:increment" width="60" />
+      </button>
+      <button class="button" @click="decrementSize">
+        <Icon icon="mdi:decrement" width="60" />
+      </button>
       </div>
     </div>
     <div class="palette">
@@ -43,7 +49,7 @@
     </div>
   <div class="palettecustom">
       <div
-        v-for="(color, index) in customPalette"
+        v-for="(color, index) in customPaletteRows"
         :key="index"
         :style="{ backgroundColor: color }"
         @click="selectColor(color)"
@@ -64,6 +70,15 @@
   components: {
   Icon,
   },
+   computed: {
+    customPaletteRows() {
+      const rows = [];
+      for (let i = 0; i < this.customPalette.length; i += 24) {
+        rows.push(this.customPalette.slice(i, i + 24));
+      }
+      return rows;
+    },
+  },
   data() {
   return {
   drawing: false,
@@ -71,8 +86,9 @@
   paletteColors: ['#ff0000', '#ffae00', '#ffff5c', '#00ff00', '#188533','#1df2f2','#0000ff', '#8b8ee0', '#3f0fff','#ee3ff2','white','#000000',],
   drawingMode: 'dot',
   tempCanvas: null,
+  size: 5,
   tempContext: null,
-  customPalette: Array.from({ length: 12 }, () => 'white'), 
+  customPalette: Array.from({ length: 72 }, () => 'white'), 
   selectedCustomPaletteIndex: null,
   };
   },
@@ -114,6 +130,19 @@
   drawPreview(event) {
  
   },
+  incrementSize() {
+        this.size = this.size+ 1;
+      },
+ decrementSize() {
+        this.size = Math.max(1, this.size - 1);
+      },
+        handleScroll(event) {
+      if (event.deltaY > 0) {
+        this.decrementSize();
+      } else {
+        this.incrementSize();
+      }
+    },
   draw(event) {
   if (!this.drawing) return;
 
@@ -127,23 +156,23 @@
   context.fillStyle = this.selectedColor;
   switch (this.drawingMode) {
   case 'dot':
-  context.fillRect(x, y, 5, 5);
+  context.fillRect(x, y,  this.size,  this.size);
   break;
   case 'square':
-  const squareSize = 30; 
+  const squareSize =  this.size*6; 
   const squareX = x - squareSize / 2;
   const squareY = y - squareSize / 2;
   context.fillRect(squareX, squareY, squareSize, squareSize);
   break;
   case 'circle':
-  const circleSize = 30; 
+  const circleSize =  this.size*6; 
   context.beginPath();
   context.arc(x, y, circleSize / 2, 0, 2 * Math.PI);
   context.fill();
   context.closePath();
   break;
   case 'triangle':
-  const triangleSize = 30; 
+  const triangleSize =  this.size*6; 
   context.beginPath();
   context.moveTo(x, y - triangleSize / 2);
   context.lineTo(x - (triangleSize / 2) * Math.sqrt(3) / 2, y + triangleSize / 2);
@@ -152,15 +181,15 @@
   context.closePath();
   break;
  case 'rectangle':
-      const rectangleWidth = 40;
-      const rectangleHeight = 30;
+      const rectangleWidth =  this.size*8;
+      const rectangleHeight =  this.size*6;
       const rectangleX = x - rectangleWidth / 2;
       const rectangleY = y - rectangleHeight / 2;
       context.fillRect(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
       break;
 case 'heart':
-      const heartWidth = 40;
-      const heartHeight = 40;
+      const heartWidth =  this.size*8;
+      const heartHeight =  this.size*8;
 
       context.beginPath();
       context.moveTo(x, y - heartHeight / 2);
@@ -171,7 +200,7 @@ case 'heart':
       context.fill();
       break;
     case 'diamond':
-      const diamondSize = 30;
+      const diamondSize = this.size*6;
       context.beginPath();
       context.moveTo(x, y - diamondSize / 2);
       context.lineTo(x + diamondSize / 2, y);
@@ -197,7 +226,11 @@ case 'heart':
   this.clearCanvas();
   // Set initial color
   context.fillStyle = this.selectedColor;
+  window.addEventListener('wheel', this.handleScroll);
   },
+  beforeDestroy() {
+  window.removeEventListener('wheel', this.handleScroll);
+},
   };
 </script>
 
