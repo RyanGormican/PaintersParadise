@@ -106,10 +106,7 @@
   this.selectedColor = color;
   },
   applyColor(index) {
-      if (index === this.selectedCustomPaletteIndex) {
-        this.selectedColor = this.customPalette[index];
-       
-      }
+       this.selectedColor = this.customPalette[index];
       },
   downloadCanvas() {
   const canvas = this.$refs.canvas;
