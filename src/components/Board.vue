@@ -41,6 +41,19 @@
     <div class="palette">
       <div v-for="(color, index) in paletteColors" :key="index" @click="selectColor(color)" :style="{ backgroundColor: color }"></div>
     </div>
+  <div class="palette">
+      <div
+        v-for="(color, index) in customPalette"
+        :key="index"
+        :style="{ backgroundColor: color }"
+        @click="selectColor(color)"
+      >
+        <button>
+          <Icon icon="solar:palette-bold" width="20" />
+          <input type="color" v-model="customPalette[index]" @input="applyColor(index)"  />
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -59,6 +72,8 @@
   drawingMode: 'dot',
   tempCanvas: null,
   tempContext: null,
+  customPalette: Array.from({ length: 12 }, () => 'white'), 
+  selectedCustomPaletteIndex: null,
   };
   },
   methods: {
@@ -82,6 +97,11 @@
   selectColor(color) {
   this.selectedColor = color;
   },
+  applyColor(index) {
+      if (index === this.selectedCustomPaletteIndex) {
+        this.selectedColor = this.customPalette[index];
+      }
+      },
   downloadCanvas() {
   const canvas = this.$refs.canvas;
   const dataUrl = canvas.toDataURL('image/png');
@@ -93,6 +113,16 @@
   drawPreview(event) {
  
   },
+  openColorPicker(index) {
+      const selectedColor = prompt('Select a color:');
+      if (selectedColor) {
+        this.$set(this.customPalette, index, selectedColor);
+        if (index === this.selectedCustomPaletteIndex) {
+          this.selectedColor = selectedColor; 
+        }
+      }
+    },
+    
   draw(event) {
   if (!this.drawing) return;
 
@@ -222,5 +252,19 @@ case 'heart':
   height: 4vh;
   cursor: pointer;
   border: 1px solid #000;
+  }
+ 
+
+  
+
+  .custom-palette-color button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
   }
 </style>
