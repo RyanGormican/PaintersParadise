@@ -20,6 +20,9 @@
         <button class="button" @click="setDrawingMode('diamond')">
           <Icon icon="ph:diamond-fill" width="60" />
         </button>
+        <button class="button" @click="setDrawingMode('ellipse')">
+          <Icon icon="mdi:ellipse" width="60" />
+        </button>
       </div>
      <div class="canvas-container">
     <div class="canvas-wrapper" @mousemove="drawPreview($event, $refs.canvas)">
@@ -79,7 +82,7 @@
   tempCanvas: null,
   size: 5,
   tempContext: null,
-  customPalette: Array.from({ length: 20 }, () => 'white'), 
+  customPalette: Array.from({ length: 20 }, () => 'white'),
   selectedCustomPaletteIndex: null,
   previewContext: null,
   };
@@ -106,8 +109,8 @@
   this.selectedColor = color;
   },
   applyColor(index) {
-       this.selectedColor = this.customPalette[index];
-      },
+  this.selectedColor = this.customPalette[index];
+  },
   downloadCanvas() {
   const canvas = this.$refs.canvas;
   const dataUrl = canvas.toDataURL('image/png');
@@ -116,88 +119,104 @@
   link.download = 'drawing.png';
   link.click();
   },
-    drawPreview(event,realCanvas) {
-      const previewCanvas = this.$refs.previewCanvas;
-      const previewContext = previewCanvas.getContext('2d');
+  drawPreview(event,realCanvas) {
+  const previewCanvas = this.$refs.previewCanvas;
+  const previewContext = previewCanvas.getContext('2d');
 
-      previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-      previewContext.fillStyle = this.selectedColor;
-      previewCanvas.opacity = 0.6;
-      previewCanvas.width = realCanvas.width;
-      previewCanvas.height = realCanvas.height;
-      const rect = previewCanvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
+  previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+  previewContext.fillStyle = this.selectedColor;
+  previewCanvas.opacity = 0.6;
+  previewCanvas.width = realCanvas.width;
+  previewCanvas.height = realCanvas.height;
+  const rect = previewCanvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
 
-      switch (this.drawingMode) {
-        case 'square':
-          const squareSize = this.size;
-          const squareX = x - squareSize / 2;
-          const squareY = y - squareSize / 2;
-          previewContext.fillRect(squareX, squareY, squareSize, squareSize);
-          break;
-        case 'circle':
-          const circleSize = this.size;
-          previewContext.beginPath();
-          previewContext.arc(x, y, circleSize / 2, 0, 2 * Math.PI);
-          previewContext.fill();
-          previewContext.closePath();
-          break;
-        case 'triangle':
-          const triangleSize = this.size;
-          previewContext.beginPath();
-          previewContext.moveTo(x, y - triangleSize / 2);
-          previewContext.lineTo(x - (triangleSize / 2) * Math.sqrt(3) / 2, y + triangleSize / 2);
-          previewContext.lineTo(x + (triangleSize / 2) * Math.sqrt(3) / 2, y + triangleSize / 2);
-          previewContext.fill();
-          previewContext.closePath();
-          break;
-        case 'rectangle':
-          const rectangleWidth = this.size*(4/3);
-          const rectangleHeight = this.size;
-          const rectangleX = x - rectangleWidth / 2;
-          const rectangleY = y - rectangleHeight / 2;
-          previewContext.fillRect(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
-          break;
-        case 'heart':
-          const heartWidth = this.size;
-          const heartHeight = this.size;
+  switch (this.drawingMode) {
+  case 'square':
+  const squareSize = this.size;
+  const squareX = x - squareSize / 2;
+  const squareY = y - squareSize / 2;
+  previewContext.fillRect(squareX, squareY, squareSize, squareSize);
+  break;
+  case 'circle':
+  const circleSize = this.size;
+  previewContext.beginPath();
+  previewContext.arc(x, y, circleSize / 2, 0, 2 * Math.PI);
+  previewContext.fill();
+  previewContext.closePath();
+  break;
+  case 'triangle':
+  const triangleSize = this.size;
+  previewContext.beginPath();
+  previewContext.moveTo(x, y - triangleSize / 2);
+  previewContext.lineTo(x - (triangleSize / 2) * Math.sqrt(3) / 2, y + triangleSize / 2);
+  previewContext.lineTo(x + (triangleSize / 2) * Math.sqrt(3) / 2, y + triangleSize / 2);
+  previewContext.fill();
+  previewContext.closePath();
+  break;
+  case 'rectangle':
+  const rectangleWidth = this.size*(4/3);
+  const rectangleHeight = this.size;
+  const rectangleX = x - rectangleWidth / 2;
+  const rectangleY = y - rectangleHeight / 2;
+  previewContext.fillRect(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+  break;
+  case 'heart':
+  const heartWidth = this.size;
+  const heartHeight = this.size;
 
-          previewContext.beginPath();
-          previewContext.moveTo(x, y - heartHeight / 2);
-          previewContext.bezierCurveTo(x + heartWidth / 2.5, y - heartHeight, x + heartWidth / 4, y - heartHeight / 3, x, y);
-          previewContext.bezierCurveTo(x - heartWidth / 4, y - heartHeight / 3, x - heartWidth / 2.5, y - heartHeight, x, y - heartHeight / 2);
-          previewContext.bezierCurveTo(x, y - heartHeight / 2.2, x, y - heartHeight / 2.5, x, y - heartHeight / 2);
-          previewContext.closePath();
-          previewContext.fill();
-          break;
-        case 'diamond':
-          const diamondSize = this.size;
-          previewContext.beginPath();
-          previewContext.moveTo(x, y - diamondSize / 2);
-          previewContext.lineTo(x + diamondSize / 2, y);
-          previewContext.lineTo(x, y + diamondSize / 2);
-          previewContext.lineTo(x - diamondSize / 2, y);
-          previewContext.closePath();
-          previewContext.fill();
-          break;
-        default:
-          break;
-      }
-    },
+  previewContext.beginPath();
+  previewContext.moveTo(x, y - heartHeight / 2);
+  previewContext.bezierCurveTo(x + heartWidth / 2.5, y - heartHeight, x + heartWidth / 4, y - heartHeight / 3, x, y);
+  previewContext.bezierCurveTo(x - heartWidth / 4, y - heartHeight / 3, x - heartWidth / 2.5, y - heartHeight, x, y - heartHeight / 2);
+  previewContext.bezierCurveTo(x, y - heartHeight / 2.2, x, y - heartHeight / 2.5, x, y - heartHeight / 2);
+  previewContext.closePath();
+  previewContext.fill();
+  break;
+  case 'diamond':
+  const diamondSize = this.size;
+  previewContext.beginPath();
+  previewContext.moveTo(x, y - diamondSize / 2);
+  previewContext.lineTo(x + diamondSize / 2, y);
+  previewContext.lineTo(x, y + diamondSize / 2);
+  previewContext.lineTo(x - diamondSize / 2, y);
+  previewContext.closePath();
+  previewContext.fill();
+  break;
+  case 'ellipse':
+  const ellipseWidth = this.size * 2;
+  const ellipseHeight = this.size;
+  previewContext.beginPath();
+  previewContext.ellipse(
+  x,
+  y,
+  ellipseWidth / 2,
+  ellipseHeight / 2,
+  0,
+  0,
+  2 * Math.PI
+  );
+  previewContext.fill();
+  previewContext.closePath();
+  break;
+  default:
+  break;
+  }
+  },
   incrementSize() {
-        this.size = this.size+ 1;
-      },
- decrementSize() {
-        this.size = Math.max(1, this.size - 1);
-      },
-        handleScroll(event) {
-      if (event.deltaY > 0) {
-        this.decrementSize();
-      } else {
-        this.incrementSize();
-      }
-    },
+  this.size = this.size+ 1;
+  },
+  decrementSize() {
+  this.size = Math.max(1, this.size - 1);
+  },
+  handleScroll(event) {
+  if (event.deltaY > 0) {
+  this.decrementSize();
+  } else {
+  this.incrementSize();
+  }
+  },
   draw(event) {
   if (!this.drawing) return;
 
@@ -211,20 +230,20 @@
   context.fillStyle = this.selectedColor;
   switch (this.drawingMode) {
   case 'square':
-  const squareSize =  this.size; 
+  const squareSize =  this.size;
   const squareX = x - squareSize / 2;
   const squareY = y - squareSize / 2;
   context.fillRect(squareX, squareY, squareSize, squareSize);
   break;
   case 'circle':
-  const circleSize =  this.size; 
+  const circleSize =  this.size;
   context.beginPath();
   context.arc(x, y, circleSize / 2, 0, 2 * Math.PI);
   context.fill();
   context.closePath();
   break;
   case 'triangle':
-  const triangleSize =  this.size; 
+  const triangleSize =  this.size;
   context.beginPath();
   context.moveTo(x, y - triangleSize / 2);
   context.lineTo(x - (triangleSize / 2) * Math.sqrt(3) / 2, y + triangleSize / 2);
@@ -232,35 +251,54 @@
   context.fill();
   context.closePath();
   break;
- case 'rectangle':
-      const rectangleWidth =  this.size*(4/3);
-      const rectangleHeight =  this.size;
-      const rectangleX = x - rectangleWidth / 2;
-      const rectangleY = y - rectangleHeight / 2;
-      context.fillRect(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
-      break;
-case 'heart':
-      const heartWidth = this.size;
-      const heartHeight = this.size;
+  case 'rectangle':
+  const rectangleWidth =  this.size*(4/3);
+  const rectangleHeight =  this.size;
+  const rectangleX = x - rectangleWidth / 2;
+  const rectangleY = y - rectangleHeight / 2;
+  context.fillRect(rectangleX, rectangleY, rectangleWidth, rectangleHeight);
+  break;
+  case 'heart':
+  const heartWidth = this.size;
+  const heartHeight = this.size;
 
-      context.beginPath();
-      context.moveTo(x, y - heartHeight / 2);
-      context.bezierCurveTo(x + heartWidth / 2.5, y - heartHeight, x + heartWidth / 4, y - heartHeight / 3, x, y);
-      context.bezierCurveTo(x - heartWidth / 4, y - heartHeight / 3, x - heartWidth / 2.5, y - heartHeight, x, y - heartHeight / 2);
-      context.bezierCurveTo(x, y - heartHeight / 2.2, x, y - heartHeight / 2.5, x, y - heartHeight / 2);
-      context.closePath();
-      context.fill();
-      break;
-    case 'diamond':
-      const diamondSize = this.size;
-      context.beginPath();
-      context.moveTo(x, y - diamondSize / 2);
-      context.lineTo(x + diamondSize / 2, y);
-      context.lineTo(x, y + diamondSize / 2);
-      context.lineTo(x - diamondSize / 2, y);
-      context.closePath();
-      context.fill();
-      break;
+  context.beginPath();
+  context.moveTo(x, y - heartHeight / 2);
+  context.bezierCurveTo(x + heartWidth / 2.5, y - heartHeight, x + heartWidth / 4, y - heartHeight / 3, x, y);
+  context.bezierCurveTo(x - heartWidth / 4, y - heartHeight / 3, x - heartWidth / 2.5, y - heartHeight, x, y - heartHeight / 2);
+  context.bezierCurveTo(x, y - heartHeight / 2.2, x, y - heartHeight / 2.5, x, y - heartHeight / 2);
+  context.closePath();
+  context.fill();
+  break;
+  case 'diamond':
+  const diamondSize = this.size;
+  context.beginPath();
+  context.moveTo(x, y - diamondSize / 2);
+  context.lineTo(x + diamondSize / 2, y);
+  context.lineTo(x, y + diamondSize / 2);
+  context.lineTo(x - diamondSize / 2, y);
+  context.closePath();
+  context.fill();
+  break;
+  case 'ellipse':
+  const ellipseWidth = this.size * 2;
+  const ellipseHeight = this.size;
+  const ellipseX = x - ellipseWidth / 2;
+  const ellipseY = y - ellipseHeight / 2;
+  context.beginPath();
+  context.ellipse(
+  x,
+  y,
+  ellipseWidth / 2,
+  ellipseHeight / 2,
+  0,
+  0,
+  2 * Math.PI
+  );
+  context.fill();
+  context.closePath();
+  break;
+
   default:
   break;
   }
@@ -282,7 +320,7 @@ case 'heart':
   },
   beforeDestroy() {
   window.removeEventListener('wheel', this.handleScroll);
-},
+  },
   };
 </script>
 
