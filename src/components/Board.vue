@@ -97,6 +97,7 @@
   customPalette: Array.from({ length: 20 }, () => 'white'),
   selectedCustomPaletteIndex: null,
   previewContext: null,
+  textInput: 'Test',
   };
   },
   methods: {
@@ -131,6 +132,7 @@
   link.download = 'drawing.png';
   link.click();
   },
+
   drawPreview(event,realCanvas) {
   const previewCanvas = this.$refs.previewCanvas;
   const previewContext = previewCanvas.getContext('2d');
@@ -418,90 +420,11 @@
           beforeDestroy() {
           window.removeEventListener('wheel', this.handleScroll);
           },
+          
           };
         </script>
 
 <style scoped="">
-  .button-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  }
-
-  .button-container-left,
-  .button-container-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  background-color: transparent;
-  }
-
-  .button {
-  border: none;
-  cursor: pointer;
-  outline: none;
-  background-color: transparent;
-  }
-
-  canvas {
-  border: 3px solid #000;
-  }
-
-  .palette {
-  display: flex;
-  margin: auto;
-  justify-content: center;
-  }
-  .palettecustom
-  {
-  display: flex;
-  margin: auto;
-  justify-content: center;
-  }
-  .preview-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  }
-  .palette div {
-  width: 4vw;
-  height: 4vh;
-  cursor: pointer;
-  border: 1px solid #000;
-  }
-  .palettecustom div {
-  width: 4vw;
-  height: 6vh;
-  cursor: pointer;
-  border: 1px solid #000;
-  }
-  .canvas-container {
-  position: relative;
-  }
-
-  .canvas-wrapper {
-  position: relative;
-  z-index: 1;
-  }
-
-  .preview-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 2;
-  }
-
-
-  .custom-palette-color button {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  }
+  @import '@/assets/styles.css';
+ 
 </style>
