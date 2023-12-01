@@ -32,6 +32,8 @@
         <button class="button" @click="setDrawingMode('octagon')">
           <Icon icon="mdi:octagon" :color="selectedColor" width="60" />
         </button>
+        
+        
       </div>
       <div class="canvas-container">
         <div class="canvas-wrapper" @mousemove="drawPreview($event, $refs.canvas)">
@@ -388,7 +390,7 @@
           break;
           case 'eyedropper':
           const canvas = this.$refs.canvas;
-          const eyedropperContext = canvas.getContext('2d'); 
+          const eyedropperContext = canvas.getContext('2d');
 
           const imageData = eyedropperContext.getImageData(x, y, 1, 1);
           const [r, g, b, a] = imageData.data;
@@ -420,7 +422,7 @@
           beforeDestroy() {
           window.removeEventListener('wheel', this.handleScroll);
           },
-          
+
           };
         </script>
 
