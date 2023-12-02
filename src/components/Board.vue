@@ -47,6 +47,9 @@
         <button class="button" @click="clearCanvas">
           <Icon icon="ph:trash" :color="selectedColor" width="60" />
         </button>
+        <button class="button" @click="triggerFileInput">
+          <Icon icon="mdi:import" :color="selectedColor" width="60" />
+        </button>
         <button class="button" @click="downloadCanvas">
           <Icon icon="material-symbols:download" :color="selectedColor" width="60" />
         </button>
@@ -59,6 +62,7 @@
         <button class="button" @click="setDrawingMode('eyedropper')">
           <Icon icon="mdi:eyedropper" :color="selectedColor" width="60" />
         </button>
+
       </div>
     </div>
     <div class="palette">
@@ -133,6 +137,35 @@
   link.href = dataUrl;
   link.download = 'drawing.png';
   link.click();
+  },
+  triggerFileInput() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.addEventListener('change', this.handleFileChange);
+  input.click();
+  },
+  handleFileChange(event) {
+  const fileInput = event.target;
+  const file = fileInput.files[0];
+  if (file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+  const fileContents = e.target.result;
+  this.applyLoadedDrawing(fileContents);
+  };
+  reader.readAsDataURL(file);
+  }
+  },
+  applyLoadedDrawing(fileContents) {
+  const canvas = this.$refs.canvas;
+  const context = canvas.getContext('2d');
+  const img = new Image();
+  img.src = fileContents;
+  img.onload = () => {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.drawImage(img, 0, 0, canvas.width, canvas.height);
+  };
   },
 
   drawPreview(event,realCanvas) {
